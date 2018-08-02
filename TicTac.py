@@ -135,7 +135,9 @@ class Game():
 	'''handles scores, human input mode, game history, who is playing now?, current tabel, visualiztion'''
 	def __init__(self, p1_name = "cpu_1", p2_name = "cpu_2"):
 		self.board = (0,)*9
-		self.history = []
+		self.count = 0
+		self.history = ["ongoing"] # list of game boards. first index = game_state ("ongoing": ongoing, "tie": tie, p1.sym: p1_win, p2.sym: p2_wins)
+		self.all_history=[] # list of 
 		self.p1 = Player(p1_name,"X",1)
 		self.p2 = Player(p1_name,"O",2)
 		self.state ="ongoing"
@@ -144,9 +146,11 @@ class Game():
 
 	def reset(self):
 		self.board = (0,)*9
-		self.history = []
-		self.p1 = Player(p1_name,"X",1)
-		self.p2 = Player(p1_name,"O",2)
+		self.all_history.append(self.history)
+		self.count +=1
+		self.history = ["ongoing"]
+		#self.p1 = Player(p1_name,"X",1)
+		#self.p2 = Player(p1_name,"O",2)
 		self.state ="ongoing"
 		self.priority = int(self.p1.num)
 
@@ -155,12 +159,22 @@ class Game():
 		'''Checks if game ended. if so, set self. state = whoever wins
 		return True if over, 
 		False if not'''
-		if is_win(self.board,self.p1.sym):
+		#print("checked end is called" ,self.board,2,is_win(self.board,self.p2.sym))
+		if is_win(self.board,self.p1.num):
 			self.state = str(self.p1.sym) + " wins"
+			self.p1.score+=1
+			self.history[0] = self.p1.sym
 			return True
-		elif is_win(self.board,self.p2.sym):
+		elif is_win(self.board,self.p2.num):
+			print("p2 won",self.state)
 			self.state = str(self.p2.sym) + " wins"
+			self.p2.score+=1
+			self.history[0] = self.p2.sym
 			return True
+		elif 0 not in self.board:
+			self.state = "tie"
+			self.p1.score+=1
+			self.p2.score+=1
 		else:
 			self.state = "ongoing"
 			return False
@@ -168,8 +182,9 @@ class Game():
 
 
 	def __str__(self):
+		disp = "_____________________________________\n"
 		indent = "  "
-		disp = " TIC-TAC-TOE\n\n"+indent
+		disp += " TIC-TAC-TOE\n\n"+indent
 		## make pices
 		
 		count = 0
@@ -187,47 +202,66 @@ class Game():
 			count+=1
 			disp+=char
 		## display state
-		disp+= "\n\nStatus: " +self.state 
+		disp+= "\n\nStatus: " + str(self.state) 
+		if self.state !="ongoing": 
+			disp += "  Enter any key to reset game"
 		## disp scores
 		disp+= "\nPlayer_1("+self.p1.sym+"): " + str(self.p1.score)+"\nPlayer_2("+self.p2.sym+"): "+str(self.p2.score)+"\n"
+		disp+= "Current Move: " + str(["Player 1\n" if self.p1.num == self.priority else "Player 2\n" if self.p2.num == self.priority else "\n"][0])
+		disp+= "Enter [end] to end session\n"
 
 		return disp
 
 	def step(self,place):
 		'''see who shoudl be currently moving. based on Q values, make move, set new Q values. '''
+		
 		if self.state == "ongoing":
 			## set the piece
 			# if player one		
 			if self.p1.num == self.priority:
 				if self.board[place] == 0:
-					self.board = set_board(self.board,place,self.p1.num)
-					print(self.board)
-				self.check_end_game()
-				self.priority = self.p2.num
+					new_board = set_board(self.board,place,self.p1.num)
+					if new_board != self.board:
+						self.history.append(new_board)
+						self.priority = self.p2.num
+					
 
 			## if plater 2
 			elif self.p2.num == self.priority:
 				if self.board[place] == 0:
-					self.board = set_board(self.board,place,self.p2.num)
-				self.check_end_game()
-				self.priority = self.p1.num
+					new_board = set_board(self.board,place,self.p2.num)
+					if new_board != self.board:
+						self.history.append(new_board)
+						self.priority = self.p1.num
+
+			self.board = new_board
+			self.check_end_game()
+				
+		else:
+			self.reset()
+
+
+
+		
 
 def pvp():
+	""" player vs player game"""
 	g=Game()
+	print(g)
 	n = None
 	while True:
 
-		print(g)
-		print(g.board)
 		try:
 			n = input()
 			if n == "end":
-				break
+				return False
 			n = int(n)
 			g.step(n)
 		except:
 			pass
 
+		print(g.history)
+		print(g)
 
 def future_max():
 	''' finds the highest possible score based on next few moves'''
@@ -242,5 +276,5 @@ def future_max():
 	pass
 if __name__ == "__main__":
 	pvp()
-
+	#print(is_win((2,2,2,0,1,0,1,1,0),2))
 
