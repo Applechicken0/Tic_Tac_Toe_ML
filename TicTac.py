@@ -1,4 +1,5 @@
 import random
+
 def compliment(board):
 	""" given tuple of 0,1,2' replaces 2 with 1 and 1 with 2's"""
 	board = tuple([2 if i == 1 else 1 if i ==2 else 0 for i in board])
@@ -10,6 +11,7 @@ def is_win(board,player_num):
 	player_num: the number on the board that refers to the player
 
 	returns True if wins, False if loses"""
+
 	# covert to complement if player 2
 	if player_num == 2:
 		#board = tuple([2 if i == 1 else 1 if i ==2 else 0 for i in board])
@@ -37,7 +39,7 @@ def is_win(board,player_num):
 def is_tie():
 	
 	pass
-
+""" UNUSED FUCNTION
 def is_legal(board):
 	num_1 = board.count(1)
 	num_2 = board.count(2)
@@ -45,8 +47,11 @@ def is_legal(board):
 		return True
 	else: 
 		return False
+"""
+'''
+unUSED fucntion
 def curr_move(board):
-	"who is moving next"
+	"""who is moving next. based on the count of """
 	moves=[]
 	num_0 = board.count(0)
 	num_1 = board.count(1)
@@ -61,11 +66,9 @@ def curr_move(board):
 		return [1,2]
 	else:
 		return "Error: Can't tell who's move it is"
+'''
 
 
-
-
-#print(create_Q_table())
 class Player():
 	def __init__(self,name,sym,num,score = 0):
 		self.name = name
@@ -88,13 +91,14 @@ class Game():
 		self.count = 0
 		self.p1 = Player(p1_name,"X",1)
 		self.p2 = Player(p1_name,"O",2)
-		self.history = [{self.p1.sym:self.p1.num,self.p2.sym:self.p2.num,"result":"ongoing"}] # list of game boards. first index maps player anme with player num and stores game state ,game_state ("ongoing": ongoing, "tie": tie, p1.sym: p1_win, p2.sym: p2_wins)
+		self.history = [{self.p1.sym:self.p1.num,self.p2.sym:self.p2.num,"result":"ongoing"},self.board] # list of game boards. first index maps player anme with player num and stores game state ,game_state ("ongoing": ongoing, "tie": tie, p1.sym: p1_win, p2.sym: p2_wins)
 		self.all_history=[] # list of 
 		self.state ="ongoing"
 		self.priority = int(self.p1.num)
 
 
 	def reset(self):
+		""" sets the game to initial start state. Allows mutiple games to be played in one session """
 		self.board = (0,)*9
 		self.all_history.append(self.history)
 		self.count +=1
@@ -130,6 +134,7 @@ class Game():
 
 
 	def __str__(self):
+		""" creates a display of the tic tav toe board and relevent information to play"""
 		disp = "_____________________________________\n"
 		indent = "  "
 		disp += " TIC-TAC-TOE\n\n"+indent

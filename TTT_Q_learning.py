@@ -8,19 +8,45 @@ class Q_Model():
 		self.rf = .9 # randomness factor. [ RANDOM (0.0) to NOT Random (1.0)]
 
 	def train(self,data,p_sym):
-		"""runs training on one dataset in the POV og p_sym"""
+		"""runs training on one dataset in the POV on p_sym"""
 		status = data[0]
+		p_num = status[p_sym]
 		positions = data[1:]
 		if p_sym !=1:
 			data = [compliment(ix) for ix in positions]
 
-		for i in range(len(positions)-1):
+		for i in range(1,len(positions)):
+
 			next_pos = positions[-i]
 			prev_pos = positions[-(i+1)]
-			if type(self.table[next_pos])==dict():
-				next_max = max(self.table[next_pos].values())
-				prev_value = self.table[prev_pos] 
-				prev_value = prev_value + self.lr*(self.table[prev_pos][next_pos] + self.dr*next_max - prev_value)
+			
+			## if next position is winning, reward = d[pos] 
+			next_max = max(self.table[next_pos].values())
+
+			## assign Rewards ##
+			reward = 0
+			# rewards = last move
+			if i == 0:
+				result = status["result"]
+				if result == p_num:
+					reward = 100
+				elif result == p_num:
+					rewward = -100
+				elif result == "tie":
+					result = 50
+				else:
+					reward = 0
+			# else rewards = 0
+			else:
+				reward = 0
+			#####
+			
+			prev_value = self.table[prev_pos][next_pos]
+			print("________________________\n",prev_pos,next_pos,"\n",prev_value)
+			prev_value = prev_value + self.lr*( reward + self.dr*next_max - prev_value)
+			self.table[prev_pos][next_pos] = prev_value
+
+
 
 def create_Q_table():
 	'''recursively creates future possbiel board configurations: where p1 or p2 starts first
@@ -62,11 +88,11 @@ def create_Q_table():
 		p1_wins = (is_win(board,1))
 		p2_wins = (is_win(board,2))
 		if (not (p1_wins or p2_wins)) and (0 not in board): # TIEs
-			Q_table[board] = 50
+			Q_table[board] = {board:50}
 		elif p1_wins:	  									# WINNING BOARDS
-			Q_table[board] = 100
+			Q_table[board] = {board:100}
 		elif p2_wins:
-			Q_table[board] = -100							# LOSING BOARDS
+			Q_table[board] = {board:-100}							# LOSING BOARDS
 		else:					  							# OTHER
 			all_next_boards=[]
 			if board not in Q_table:
@@ -83,14 +109,14 @@ def create_Q_table():
 				Q_table[board][next_B] = random.uniform(-.5,.5) ## initailize Q value to a number between -1 and 1
 		########################################
 	return Q_table
-
-Q=Q_Model()
-print(Q.table)
-X_win=["X", (0, 0, 0, 0, 0, 0, 0, 1, 0), (0, 2, 0, 0, 0, 0, 0, 1, 0), (0, 2, 0, 0, 0, 0, 1, 1, 0), (2, 2, 0, 0, 0, 0, 1, 1, 0), (2, 2, 0, 0, 0, 1, 1, 1, 0), (2, 2, 0, 0, 2, 1, 1, 1, 0), (2, 2, 1, 0, 2, 1, 1, 1, 0), (2, 2, 1, 2, 2, 1, 1, 1, 0), (2, 2, 1, 2, 2, 1, 1, 1, 1)]
-#a = Q.train(X_win,1)
-#b = Q.train(X_win,2)
-#print(a)
-for item in Q.table.values():
-	print(type(item))
-	if type(item) == int:
-		print(item)
+if __name__ == "__main__":
+	Q=Q_Model()
+	#print(Q.table)
+	print((0,0,0,0,0,0,0,0,0) in Q.table)
+	X_win=[{'O': 2, 'result': 1, 'X': 1}, (0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 1, 0, 0, 0, 0, 0), (0, 2, 0, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 2), (0, 2, 1, 1, 1, 1, 0, 2, 2)]
+	t = 0
+	while (t<10):
+		t +=1
+		a = Q.train(X_win,"X")
+	#b = Q.train(X_win,2)
+	print(a)
