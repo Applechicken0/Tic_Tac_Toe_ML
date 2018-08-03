@@ -39,34 +39,6 @@ def is_win(board,player_num):
 def is_tie():
 	
 	pass
-""" UNUSED FUCNTION
-def is_legal(board):
-	num_1 = board.count(1)
-	num_2 = board.count(2)
-	if abs(num_1 - num_2) <=1:
-		return True
-	else: 
-		return False
-"""
-'''
-unUSED fucntion
-def curr_move(board):
-	"""who is moving next. based on the count of """
-	moves=[]
-	num_0 = board.count(0)
-	num_1 = board.count(1)
-	num_2 = board.count(2)
-	if num_0 == 0:
-		return []
-	elif num_2 > num_1:
-		return [1]
-	elif num_1 > num_2:
-		return [2]
-	elif num_1 == num_2:
-		return [1,2]
-	else:
-		return "Error: Can't tell who's move it is"
-'''
 
 
 class Player():
