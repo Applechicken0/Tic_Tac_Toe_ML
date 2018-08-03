@@ -1,4 +1,5 @@
 from TicTac import *
+import operator
 
 def is_legal(board):
 	num_1 = board.count(1)
@@ -69,10 +70,9 @@ class Q_Model():
 			#####
 			
 			prev_value = self.table[prev_pos][next_pos]
-			print("________________________\n",prev_pos,next_pos,"\n",prev_value)
 			prev_value = prev_value + self.lr*( reward + self.dr*next_max - prev_value)
 			self.table[prev_pos][next_pos] = prev_value
-######  END OF CLASS DEFINITIONS ############
+
 
 	@staticmethod
 	def create_Q_table():
@@ -136,11 +136,48 @@ class Q_Model():
 					Q_table[board][next_B] = random.uniform(-.5,.5) ## initailize Q value to a number between -1 and 1
 			########################################
 		return Q_table
+######  END OF CLASS DEFINITIONS ############
+def Rand_vs_Rand(g):
+	""" plays one round, start to finish of a random vs random algorutym"""
+
+	while g.state == "ongoing":
+
+		# make 1st move
+		Rand_Step(g)
+
+		if g.state != "ongoing": break;
+		# make second move
+		Rand_Step(g)
+	g.step(0)
+
+
+def Rand_Step(g):
+	""" Takes a random Step"""
+	possible_moves = open_moves(g.board)
+	move = random.choice(tuple(possible_moves))
+	g.step(move)
+
+def Model_Step(g,Q):
+	""" Uses model Q to make a move on game g"""
+	next_moves = Q.table[g.board]
+	next_board = max(next_moves.items(), key=operator.itemgetter(1))[0]
+	place = [i for i in range(len(g.board)) if g.board[i] != next_board[i]]
+	g.step(place[0])
+
+
+def Model_vs_Rand(g,Q):
+	while g.state == "ongoing":
+		# make 1st move
+		Rand_Step(g)
+		if g.state != "ongoing": break
+		# make second move
+		Model_Step(g,Q)
+
 
 if __name__ == "__main__":
 	Q=Q_Model()
 	#print(Q.table)
-	print((0,0,0,0,0,0,0,0,0) in Q.table)
+	'''print((0,0,0,0,0,0,0,0,0) in Q.table)
 	X_win=[{'O': 2, 'result': 1, 'X': 1}, (0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 1, 0, 0, 0, 0, 0), (0, 2, 0, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 2), (0, 2, 1, 1, 1, 1, 0, 2, 2)]
 	t = 0
 	while (t<10):
@@ -148,3 +185,6 @@ if __name__ == "__main__":
 		a = Q.train(X_win,"X")
 	#b = Q.train(X_win,2)
 	print(a)
+	'''
+	g=Game()
+	Model_Step(g,Q)
