@@ -1,4 +1,8 @@
 import random
+def compliment(board):
+	""" given tuple of 0,1,2' replaces 2 with 1 and 1 with 2's"""
+	board = tuple([2 if i == 1 else 1 if i ==2 else 0 for i in board])
+	return board
 
 def is_win(board,player_num):
 	"""
@@ -8,7 +12,8 @@ def is_win(board,player_num):
 	returns True if wins, False if loses"""
 	# covert to complement if player 2
 	if player_num == 2:
-		board = tuple([2 if i == 1 else 1 if i ==2 else 0 for i in board])
+		#board = tuple([2 if i == 1 else 1 if i ==2 else 0 for i in board])
+		board = compliment(board)
 	# run checks
 	zero = board[0];one = board[1];two = board[2];three = board[3];four = board[4];five = board[5];six = board[6];seven = board[7];eight = board[8]
 	# middle wins
@@ -29,7 +34,8 @@ def is_win(board,player_num):
 			return True
 	return False
 
-def is_ongoing():
+def is_tie():
+	
 	pass
 
 def is_legal(board):
@@ -80,10 +86,10 @@ class Game():
 	def __init__(self, p1_name = "cpu_1", p2_name = "cpu_2"):
 		self.board = (0,)*9
 		self.count = 0
-		self.history = ["ongoing"] # list of game boards. first index = game_state ("ongoing": ongoing, "tie": tie, p1.sym: p1_win, p2.sym: p2_wins)
-		self.all_history=[] # list of 
 		self.p1 = Player(p1_name,"X",1)
 		self.p2 = Player(p1_name,"O",2)
+		self.history = [{self.p1.sym:self.p1.num,self.p2.sym:self.p2.num,"result":"ongoing"}] # list of game boards. first index maps player anme with player num and stores game state ,game_state ("ongoing": ongoing, "tie": tie, p1.sym: p1_win, p2.sym: p2_wins)
+		self.all_history=[] # list of 
 		self.state ="ongoing"
 		self.priority = int(self.p1.num)
 
@@ -93,8 +99,6 @@ class Game():
 		self.all_history.append(self.history)
 		self.count +=1
 		self.history = ["ongoing"]
-		#self.p1 = Player(p1_name,"X",1)
-		#self.p2 = Player(p1_name,"O",2)
 		self.state ="ongoing"
 		self.priority = int(self.p1.num)
 
@@ -107,18 +111,18 @@ class Game():
 		if is_win(self.board,self.p1.num):
 			self.state = str(self.p1.sym) + " wins"
 			self.p1.score+=1
-			self.history[0] = self.p1.sym
+			self.history[0]["result"] = self.p1.num
 			return True
 		elif is_win(self.board,self.p2.num):
-			print("p2 won",self.state)
 			self.state = str(self.p2.sym) + " wins"
 			self.p2.score+=1
-			self.history[0] = self.p2.sym
+			self.history[0]["result"] = self.p2.num
 			return True
 		elif 0 not in self.board:
 			self.state = "tie"
 			self.p1.score+=1
 			self.p2.score+=1
+			self.history[0]["result"] = "tie"
 		else:
 			self.state = "ongoing"
 			return False
@@ -193,10 +197,11 @@ def pvp():
 	g=Game()
 	print(g)
 	n = None
-	while True:
+	while g.state == "ongoing":
 
 		try:
-			n = input()
+			#n = input()
+			n = random.choice((0,1,2,3,4,5,6,7,8,9))
 			if n == "end":
 				return False
 			n = int(n)
