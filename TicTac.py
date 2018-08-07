@@ -82,7 +82,7 @@ class Game():
         self.count +=1
         self.history = [{self.p1.sym:self.p1.num,self.p2.sym:self.p2.num,"result":"ongoing"},self.board]
         self.state = "ongoing"
-        self.priority = int(self.p1.num)
+        self.priority = random.choice((int(self.p1.num),int(self.p2.num)))
 
 
     def check_end_game(self):
@@ -223,10 +223,11 @@ def future_max():
         pass
     pass
 if __name__ == "__main__":
-    n=10000
+    '''n=10000
     g=Game()
     while n!=100:
         
         print(g)
         n=input()
-        g.step(int(n))
+        g.step(int(n))'''
+    pass

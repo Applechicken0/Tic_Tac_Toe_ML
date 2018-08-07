@@ -1,5 +1,7 @@
 from TicTac import *
 import operator
+import random
+
 
 def is_legal(board):
 	num_1 = board.count(1)
@@ -29,22 +31,23 @@ def curr_move(board):
 
 #############    Q CLASS     ###############################
 class Q_Model():
-	def __init__(self):
+	def __init__(self, lr = .9, dr = .9, rf = .7 ):
 		self.table = self.create_Q_table()
-		self.lr = .9 # learning rate. How much new info overides old
-		self.dr = .9 # discount rate. Determines importance of future moves
-		self.rf = .9 # randomness factor. [ RANDOM (0.0) to NOT Random (1.0)]
+		self.lr = lr # learning rate. How much new info overides old
+		self.dr = dr # discount rate. Determines importance of future moves
+		self.rf = rf # randomness factor. [ RANDOM (0.0) to NOT Random (1.0)]
 
 	def train(self,data,p_sym):
-		"""runs training on one dataset in the POV on p_sym"""
+		"""runs training on one dataset in the POV on p_sym
+		[{self.p1.sym:self.p1.num,self.p2.sym:self.p2.num,"result":"ongoing"},self.board]"""
 		status = data[0]
 		p_num = status[p_sym]
 		positions = data[1:]
+
 		if p_sym !=1:
 			data = [compliment(ix) for ix in positions]
 
 		for i in range(1,len(positions)):
-
 			next_pos = positions[-i]
 			prev_pos = positions[-(i+1)]
 			
@@ -54,18 +57,19 @@ class Q_Model():
 			## assign Rewards ##
 			reward = 0
 			# rewards = last move
-			if i == 0:
+			if i == 1:
 				result = status["result"]
-				if result == p_num:
+				if result == "tie":
+					reward = 50
+				elif not isinstance(result,int):
+					pass
+				elif result == p_num: ### result: player won
 					reward = 100
-				elif result == p_num:
-					rewward = -100
-				elif result == "tie":
-					result = 50
-				else:
-					reward = 0
+				elif result != p_num: ### result: other won
+					reward = -100
 			# else rewards = 0
 			else:
+				#print("no Rewarding")
 				reward = 0
 			#####
 			
@@ -149,7 +153,7 @@ def Rand_vs_Rand(g):
 		# make second move
 		Rand_Step(g)
 	g.step(0)
-
+	return g.score
 
 def Rand_Step(g):
 	""" Takes a random Step"""
@@ -157,34 +161,65 @@ def Rand_Step(g):
 	move = random.choice(tuple(possible_moves))
 	g.step(move)
 
-def Model_Step(g,Q):
+def Model_Step(g,Q,level = .9):
 	""" Uses model Q to make a move on game g"""
-	next_moves = Q.table[g.board]
-	next_board = max(next_moves.items(), key=operator.itemgetter(1))[0]
-	place = [i for i in range(len(g.board)) if g.board[i] != next_board[i]]
-	g.step(place[0])
+	r = random.uniform(0,1)
+	if r > level:
+		Rand_Step(g)
+	else:
+		#next_moves = Q.table[g.board]
+		#next_board = max(next_moves.items(), key=operator.itemgetter(1))[0]
+		next_board = Max_Min(g.board,Q)
+
+		place = [i for i in range(len(g.board)) if g.board[i] != next_board[i]]
+		if len(place)==0:
+			pass
+		else:
+			g.step(place[0])
+
+def Max_Min(board,Q):
+	next_moves = Q.table[board]
+	next_board = max([Min(poss_board,Q) for poss_board in next_moves.keys()], key=operator.itemgetter(1))[0]
+	return next_board
+def Min(board,Q):
+	next_boards = Q.table[board]
+	next_min_value = min(next_boards.items())
+	return next_min_value
 
 
 def Model_vs_Rand(g,Q):
 	while g.state == "ongoing":
 		# make 1st move
-		Rand_Step(g)
-		if g.state != "ongoing": break
-		# make second move
 		Model_Step(g,Q)
+		if g.state != "ongoing": break;
+		# make second move
+		
+		Rand_Step(g)
+	g.step(0)
+	return g.score
 
 
 if __name__ == "__main__":
-	Q=Q_Model()
-	#print(Q.table)
-	'''print((0,0,0,0,0,0,0,0,0) in Q.table)
-	X_win=[{'O': 2, 'result': 1, 'X': 1}, (0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 1, 0, 0, 0, 0, 0), (0, 2, 0, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 0, 0), (0, 2, 1, 1, 0, 0, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 0), (0, 2, 1, 1, 0, 1, 0, 2, 2), (0, 2, 1, 1, 1, 1, 0, 2, 2)]
-	t = 0
-	while (t<10):
-		t +=1
-		a = Q.train(X_win,"X")
-	#b = Q.train(X_win,2)
-	print(a)
-	'''
+	from Run_Some_Trainings import pickle_load
+	
+	print("Loading Model")
+
+	Q = pickle_load()
+
+
 	g=Game()
-	Model_Step(g,Q)
+	while True:
+		while g.state == "ongoing":
+			m=input()
+			# make 1st move
+			Model_Step(g,Q)
+			print(g)
+			if g.state != "ongoing": break;
+			# make second move
+			m=input()
+			Model_Step(g,Q)
+			print(g)
+		g.step(0)
+
+	
+	
