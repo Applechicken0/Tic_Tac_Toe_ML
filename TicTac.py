@@ -67,7 +67,7 @@ class Game():
         self.all_history=[] # list of 
         self.state ="ongoing"
         self.priority = int(self.p1.num)
-        self.score = {self.p1.name : self.p1.score, self.p2.name:self.p2.score}
+        self.score = {self.p1.name : self.p1.score, self.p2.name:self.p2.score,"tie":0}
 
     def set_game_score(self):
         self.score[self.p1.name]=self.p1.score
@@ -111,6 +111,7 @@ class Game():
             self.p1.score+=1
             self.p2.score+=1
             self.history[0]["result"] = "tie"
+            self.score["tie"]+=1
             self.set_game_score()
             
         else:

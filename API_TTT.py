@@ -19,23 +19,28 @@ def board_tup_to_str(board):
 	return result
 
 def TTT_API_call(board,player_sym):
-	board_str = board_tup_to_str(board)
+	try:
+		board_str = board_tup_to_str(board)
 
-	response = requests.get("https://stujo-tic-tac-toe-stujo-v1.p.mashape.com/"+board_str+"/"+player_sym,
-	  headers={
-	    "X-Mashape-Key": "29Pn8JXcWhmshoXRbwTEM3vKQR4zp1CiXkPjsnCLJ7EXqtluB9",
-	    "Accept": "application/json"
-	  }
-	)
-	j =response.json()
-	if "recommendation" in j:
-		
-		return j["recommendation"]
+		response = requests.get("https://stujo-tic-tac-toe-stujo-v1.p.mashape.com/"+board_str+"/"+player_sym,
+		  headers={
+		    "X-Mashape-Key": "29Pn8JXcWhmshoXRbwTEM3vKQR4zp1CiXkPjsnCLJ7EXqtluB9",
+		    "Accept": "application/json"
+		  }
+		)
+		j =response.json()
+		if "recommendation" in j:
+			
+			return j["recommendation"]
+	except:
+		pass
 	
 
-def API_step(g,level = .8):
+def API_step(g,level = 1):
 	r = random.uniform(0,1)
+
 	if r > level:
+		#print("Random")
 		Rand_Step(g)
 	else:
 		if g.p1.num==g.priority:
@@ -45,6 +50,7 @@ def API_step(g,level = .8):
 
 		step_num = TTT_API_call(g.board,sym)
 		if step_num == None:
+			#print("RANDOM")
 			Rand_Step(g)
 		else:
 			g.step(step_num)
