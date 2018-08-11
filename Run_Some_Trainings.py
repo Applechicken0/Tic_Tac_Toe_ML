@@ -10,16 +10,17 @@ from API_TTT import *
 #import pandas
 #import matplotlib.pyplt as plt
 Desktop=""
-f_name ="U:\Tic_Tac_Toe_ML\Q_table_Min_Max_saved.pkl"
+f_name ="Q_table_After_delete.pkl"
 
-def pickle_save(filename,item):
-    "saves data to a pickle file located on the desktop"
-    with open(filename,'wb') as f:  # Python 3: open(..., 'rb')
+def pickle_save(item):
+
+    """saves data to a pickle file located on the desktop"""
+    with open(f_name,'wb') as f:  # Python 3: open(..., 'rb')
         pickle.dump(item, f)# Save a dictionary into a pickle file.
-        print("data saved to ",filename)
+        print("data saved to ",f_name)
 
-def pickle_load(filename="U:\Tic_Tac_Toe_ML\Q_table_Min_Max_saved.pkl"):
-    "loads data from a desktop pickle file. returns the data"
+def pickle_load(filename=f_name):
+    """loads data from a desktop pickle file. returns the data"""
     with open(filename,'rb') as f:  # Python 3: open(..., 'rb')
         loaded = pickle.load(f)
         print("loaded data from: ",filename)
@@ -28,13 +29,24 @@ def plot_history(Scores):
     X=[]
     y1=[]
     y2=[]
+    y3=[]
+    y4=[]
+    Model_Pts = 0
+    API_Pts = 0
     for item in Scores:
         X.append(item)
         vals = list(Scores[item].values())
         y1.append(vals[0])
         y2.append(vals[1])
-    plt.plot(X, y1, 'r--',label='Red: p1')
-    plt.plot(X, y2, 'b--',label='Blue: p2')
+        Model_Pts+=vals[0]
+        API_Pts+=vals[1]
+        y3.append(Model_Pts/item)
+        y4.append(API_Pts/item)
+    plt.plot(X, y1, 'r--',label='MODEL: p1')
+    plt.plot(X, y2, 'b--',label='API p2')
+    plt.plot(X, y3, 'g--',label='Model_Pts/Epoch')
+    plt.plot(X, y4, 'y--',label='API_Pts/Epcoh')
+    plt.legend()
     plt.show()
 
 # run trainings 
@@ -49,11 +61,12 @@ def plot_history(Scores):
 #Q=pickle_load(filename)
 
 def run_train():
-    Q=pickle_load(filename = f_name)
+    Q=pickle_load()
+    #Q= Q_Model()
     print(Q)
-    EPOCHS = 30
+    EPOCHS = 600
     Scores = {}
-    for EPOCH_num in range(EPOCHS):
+    for EPOCH_num in range(1,EPOCHS):
         print(EPOCH_num)
         # initialize each game
         
@@ -61,13 +74,13 @@ def run_train():
         total_games = 0
         # play ten games
         t=time.time()
-        while total_games < 20:
+        while total_games < 40:
 
             total_games +=1
             #Rand_vs_Rand(g)
             while g.state == "ongoing":
                 if g.priority == g.p2.num:
-                    API_step(g,.7)
+                    API_step(g,.9)
                     #Model_Step(g,Q)
                 elif g.priority == g.p1.num:
                     Model_Step(g,Q)
@@ -79,12 +92,12 @@ def run_train():
             Q.train(h,"X")
             Q.train(h,"O")
         print("Time: ",time.time()-t)
-        pickle_save(f_name,Q)
+        pickle_save(Q)
             
         Scores[EPOCH_num] = g.score
     print(Scores)
     plot_history(Scores)
-    pickle_save(f_name,Q)
+    pickle_save(Q)
 
 def test_single_game():
     Q=pickle_load(filename = f_name)
