@@ -95,3 +95,7 @@ The model was initially trained with a AI that made random moves. The model quic
 In order to train the Model with a more advanced opponent I used a online TicTacToe API to train the model. The API use can be found in API_TTT.py. After running multiple trainings(and fixing bugs), this was the result. 
 <img src = "Pictures/500_Zoom_Improvement.png">
 It is a bit hard to see on this graph, but there is a green line that graphs the overall average score of the Model over the course of training. The yellow line is the overall score of the API. The Model starts of doing worse than the API, but then the score startes to approach that of the API. The Blue and Red lines are the scores for each training batch and the line near the bottom shows the number of ties in the game.
+
+#### Conclusion
+The Model has shown significant improvement after training. This is evident from the performance of the model before and after training. The trained model was able to implement defense and favored board positions that created 2 paths to wins.
+Another way I want to train this model is to use a Neural Network instead of a Q table. This can also be applied to other games such as Chess. 
