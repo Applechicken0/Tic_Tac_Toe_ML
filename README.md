@@ -17,8 +17,9 @@ Move Mapping
 6 | 7 | 8
 
 The game will look like this
-<img src = "Pictures/TTT_Visual_1.png">
-<img src = "Pictures/TTT_Visual_2.png">
+
+<img src = "Pictures/TTT_Visual_1.png" align = "left" height = "200" width = "300">
+<img src = "Pictures/TTT_Visual_2.png"  align = "left" height = "200" width = "300">
 
 
 ### Game Environment
