@@ -10,7 +10,7 @@ from API_TTT import *
 #import pandas
 #import matplotlib.pyplt as plt
 Desktop=""
-f_name ="Q_table_After_delete.pkl"
+f_name ="Saved_Models/Q_table_After_delete.pkl"
 
 def pickle_save(item):
 
