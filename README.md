@@ -17,10 +17,26 @@ Move Mapping
 6 | 7 | 8
 
 The game will look like this
-<p float="left">
- <img src = "Pictures/TTT_Visual_1.png" align = "left" height = "300" width = "400"/>
- <img src = "Pictures/TTT_Visual_2.png"  align = "right" height = "300" width = "450"/>
-</p>
+
+<table width="500" border="0" cellpadding="5">
+
+<tr>
+
+<td align="center" valign="center">
+<img src="Pictures/TTT_Visual_1.png" alt="description here" />
+<br />
+Game Ongoing
+</td>
+
+<td align="center" valign="center">
+<img src="Pictures/TTT_Visual_2.png" alt="description here" />
+<br />
+Game Ended
+</td>
+
+</tr>
+
+</table>
 
 
 
