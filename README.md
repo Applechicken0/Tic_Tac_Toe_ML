@@ -46,5 +46,16 @@ During game play, the AI does something called a MiniMax search through the Q ta
 
 The function Model_Step( ) first looks for any move that will automatically lead to victory. If those don't exist, it will use a MiniMax search using the Q Table and the current board position to choose the best move.
 
+#### Results
+The model was initially trained with a AI that made random moves. The model quickly learned how to beat the AI, but this wasn't enough to beat any human player. I could still easily beat my Model. Its seems like it just learned an easy way to defeat the Random AI, but isn't able to generalize to any player. To address this, I ran my training with a TicTacToe API and I factored in different levels of randomness into the API, or else the Model would never win. 
 
+##### Random vs Model
+* Red = Model
+* Blue = Random
+* Y axis: Wins per batch
+* X axis: Batch Number
+<img src = "Pictures/Computer_first_converged.png">
+#### API vs Model
+In order to train the Model with a more advanced opponent I used a online TicTacToe API to train the model. The API use can be found in API_TTT.py. After running multiple trainings(and fixing bugs), this was the result. 
 <img src = "Pictures/500_Zoom_Improvement.png">
+It is a bit hard to see on this graph, but there is a green line that graphs the overall average score of the Model over the course of training. The yellow line is the overall score of the API. The Model starts of doing worse than the API, but then the score startes to approach that of the API. The Blue and Red lines are the scores for each training batch and the line near the bottom shows the number of ties in the game.
