@@ -5,6 +5,22 @@ Create a TicTacToe Game and AI using machine learning
 
 The fact that machine learning is able master complicated games like chess is just really amazing, and I wanted to learn how to do that.  For the purpose of learning machine learning, I created a Tic Tac Toe environment to play the game, implemented a Q Learning Reinforcement Model, and trained the Model on my game!
 
+### Play the AI
+To Play against the trained Model, run the file 'Versus_Model.py' in the terminal. To make a move, press keys 0 - 8, each representing a index in the TicTacToe board, as shown below. The file "Saved_Models/Q_table_new_for_show.pkl" stores the trained Q table. 'Versus_Model.py' will automatically load this file.
+
+Move Mapping
+
+0 | 1 | 2 
+
+3 | 4 | 5
+
+6 | 7 | 8
+
+The game will look like this
+<img src = "Pictures/TTT_Visual_1">
+<img src = "Pictures/TTT_Visual_2">
+
+
 ### Game Environment
 Creating, Managing, Logging, Playing and Visualizing Games of Tic Tac Toe
 The code is found in TicTac.py
