@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from TicTac import *
 from TTT_Q_learning import *
 import pickle
@@ -234,4 +233,3 @@ if __name__ == "__main__":
     run_train()
 
 
->>>>>>> d76c17fe4d66a10782f4e99314c6152c1c65ce24
