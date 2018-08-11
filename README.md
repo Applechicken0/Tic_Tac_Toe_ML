@@ -18,10 +18,10 @@ Move Mapping
 
 The game will look like this
 <p float="left">
- <img src = "Pictures/TTT_Visual_1.png" align = "left" height = "200" width = "300"/>
- <img src = "Pictures/TTT_Visual_2.png"  align = "right" height = "200" width = "350"/>
+ <img src = "Pictures/TTT_Visual_1.png" align = "left" height = "300" width = "400"/>
+ <img src = "Pictures/TTT_Visual_2.png"  align = "right" height = "300" width = "450"/>
 </p>
-<img src="https://openclipart.org/image/2400px/svg_to_png/28580/kablam-Number-Animals-1.png" width="200"/> <img src="https://openclipart.org/download/71101/two.svg" width="300"/>
+
 
 
 
