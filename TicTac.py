@@ -212,17 +212,6 @@ def open_moves(board):
     return [i for i in range(len(board)) if board[i] == 0]
 
 
-def future_max():
-    ''' finds the highest possible score based on next few moves'''
-    def front_prop():
-        '''recursive func that find 
-        your move: maximizes your score,
-            enmy move: minimizes your score
-                RECUR! : recursive call to find the next best move 
-        select the max
-        '''
-        pass
-    pass
 if __name__ == "__main__":
     '''n=10000
     g=Game()
